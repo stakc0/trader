@@ -145,7 +145,7 @@ export function createHandler({env=process.env,db=new Store(env),fetchImpl=fetch
   }
   if(path==='/api/generations/public'&&method==='GET'){
    const rows=db.configured?await db.request('generations',{query:{select:'id,user_id,status,output_url,error,created_at,updated_at',order:'created_at.desc',limit:'40'}}):[];
-   for(const item of rows){if(item.status==='queued'&&item.status_url&&providerConfigured(env)){try{const state=await checkGeneration(item.status_url,env,fetchImpl);if(state.status==='completed'&&state.outputUrl){await db.rpc('finish_generation',{p_id:item.id,p_user:item.user_id,p_status:'completed',p_output_url:state.outputUrl});item.status='completed';item.output_url=state.outputUrl}else if(['failed','error'].includes(state.status)){await db.rpc('finish_generation',{p_id:item.id,p_user:item.user_id,p_status:'failed',p_error:'Provider reported failure'});item.status='failed'}}catch{}}}
+   for(const item of rows){if(item.status==='queued'&&item.status_url&&providerConfigured(env)){try{const state=await checkGeneration(item.status_url,env,fetchImpl);if(state.status==='completed'&&state.outputUrl){await db.rpc('finish_generation',{p_id:item.id,p_user:item.user_id,p_status:'completed',p_output_url:state.outputUrl});item.status='completed';item.output_url=state.outputUrl}else if(['failed','error','nsfw','rejected','cancelled','canceled'].includes(state.status)){await db.rpc('finish_generation',{p_id:item.id,p_user:item.user_id,p_status:'failed',p_error:'Provider reported failure'});item.status='failed'}}catch{}}}
    return json({items:rows.map(({user_id,...item})=>item)});
   }
   if(path==='/api/generations'&&method==='GET'){
@@ -157,7 +157,7 @@ export function createHandler({env=process.env,db=new Store(env),fetchImpl=fetch
    const rows=await db.request('generations',{query:{id:`eq.${id}`,user_id:`eq.${user.id}`,select:'*'}});
    const item=rows[0];if(!item)bad('Generation not found',404);
    if(item.status==='queued'&&item.status_url&&providerConfigured(env)){
-    try{const state=await checkGeneration(item.status_url,env,fetchImpl);if(state.status==='completed'&&state.outputUrl){await db.rpc('finish_generation',{p_id:id,p_user:user.id,p_status:'completed',p_output_url:state.outputUrl});item.status='completed';item.output_url=state.outputUrl}else if(['failed','error'].includes(state.status)){await db.rpc('finish_generation',{p_id:id,p_user:user.id,p_status:'failed',p_error:'Provider reported failure'});item.status='failed'}}catch{}
+    try{const state=await checkGeneration(item.status_url,env,fetchImpl);if(state.status==='completed'&&state.outputUrl){await db.rpc('finish_generation',{p_id:id,p_user:user.id,p_status:'completed',p_output_url:state.outputUrl});item.status='completed';item.output_url=state.outputUrl}else if(['failed','error','nsfw','rejected','cancelled','canceled'].includes(state.status)){await db.rpc('finish_generation',{p_id:id,p_user:user.id,p_status:'failed',p_error:'Provider reported failure'});item.status='failed'}}catch{}
    }
    return json({item});
   }
