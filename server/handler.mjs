@@ -15,7 +15,7 @@ export function createHandler({env=process.env,db=new Store(env),fetchImpl=fetch
   const url=new URL(req.url),path=url.pathname,method=req.method;
   if(!path.startsWith('/api/'))return json({error:'Not found'},404);
   originGuard(req,url);
-  if(path==='/api/config'&&method==='GET')return json({mint:MINT,credits_policy:'1 credit per 1,000 whole tokens held; live RPC verification before each debit; spent credits remain spent if tokens leave wallet',provider:providerConfigured(env)?'configured':'unavailable',database:!!db.configured,market:'live RPC / DexScreener when available',tiktok:'user-supplied handle; not OAuth verified',grpc:'confirmed Yellowstone activity worker; feed may be empty until mint exists'});
+  if(path==='/api/config'&&method==='GET')return json({mint:MINT,credits_policy:'1 credit per 1,000 whole tokens held; live RPC verification before each debit; spent credits remain spent if tokens leave wallet',provider:providerConfigured(env)?'configured':'unavailable',database:!!db.configured,market:'live RPC / DexScreener when available',tiktok:'user-supplied handle; not OAuth verified',rpc:Boolean(env.SOLANA_RPC_URL),grpc:Boolean(env.SOLANA_GRPC_ENDPOINT&&env.SOLANA_GRPC_X_TOKEN),grpc_description:'confirmed Yellowstone activity worker; feed may be empty until mint exists'});
   if(path==='/api/market'&&method==='GET'){
    if(!env.SOLANA_RPC_URL)return json({mint:MINT,status:'unavailable',reason:'RPC not configured'});
    try{
