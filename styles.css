@@ -24,3 +24,4 @@
 #generations{min-height:0!important;height:auto!important;padding-top:18px!important}#generations:not([hidden]){display:block!important}#generations .page-title{margin-top:0;padding-top:0}#generations .generation-gallery{margin-top:0}
 /* Never reserve a viewport-sized spacer on routed gallery pages. */
 .view{min-height:0!important}#main{min-height:0!important}#generations:not([hidden]){display:block!important;position:relative!important;top:0!important;margin:0!important;padding:18px 7vw 60px!important;transform:none!important}#generations:not([hidden]) .page-title{margin-top:0!important;padding-top:0!important}
+.nav-market{display:flex;gap:12px;align-items:center;margin-left:auto;font:9px 'Geist Mono';color:var(--muted);text-transform:uppercase}.nav-market b{color:#58ffb1;font-weight:500}.top-actions{margin-left:0}@media(max-width:900px){.nav-market{display:none}}
