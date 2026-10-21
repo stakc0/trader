@@ -33,12 +33,20 @@ export function createHandler({env=process.env,db=new Store(env),fetchImpl=fetch
    const items=await db.request('token_activity',{query:{mint:`eq.${MINT}`,select:'signature,slot,mint,changes,created_at',order:'slot.desc',limit:'30'}});
    return json({mint:MINT,items,source:'confirmed Yellowstone gRPC token-balance updates',classification:'token movement; buy/sell not inferred'});
   }
+  if(path.startsWith('/api/profiles/')&&method==='GET'){
+   let username;try{username=decodeURIComponent(path.slice('/api/profiles/'.length))}catch{bad('Invalid username')}
+   if(!/^[a-z0-9_]{3,30}$/.test(username))bad('Invalid username');
+   const [person]=await db.request('profiles',{query:{username:`eq.${username}`,select:'id,username,display_name,bio,tiktok_url,created_at',limit:'1'}});
+   if(!person)bad('Profile not found',404);
+   const posts=await db.request('posts',{query:{user_id:`eq.${person.id}`,select:'id,body,media_url,video_url,created_at',order:'created_at.desc',limit:'30'}});
+   return json({profile:person,posts});
+  }
   if(path==='/api/posts'&&method==='GET'){
    const posts=await db.request('posts',{query:{select:'id,user_id,persona_id,body,media_url,video_url,created_at',order:'created_at.desc',limit:'50'}});
    const ids=[...new Set(posts.map(p=>p.user_id))];
-   const authors=ids.length?await db.request('profiles',{query:{id:`in.(${ids.join(',')})`,select:'id,username'}}):[];
-   const names=new Map(authors.map(p=>[p.id,p.username]));
-   return json({items:posts.map(p=>({...p,username:names.get(p.user_id)||'trader'}))});
+   const authors=ids.length?await db.request('profiles',{query:{id:`in.(${ids.join(',')})`,select:'id,username,tiktok_url'}}):[];
+   const names=new Map(authors.map(p=>[p.id,p]));
+   return json({items:posts.map(p=>({...p,username:names.get(p.user_id)?.username||'trader',tiktok_url:names.get(p.user_id)?.tiktok_url||null}))});
   }
   if((path==='/api/auth/signup'||path==='/api/auth/login')&&method==='POST'){
    const data=await body(req),username=typeof data.username==='string'?data.username.trim().toLowerCase():'';
