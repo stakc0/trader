@@ -7,8 +7,9 @@ const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{stat
 const bad=(message,status=400)=>{const e=new Error(message);e.status=status;throw e};
 const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
 const publicProfile=p=>({id:p.id,username:p.username,display_name:p.display_name,bio:p.bio,tiktok_handle:p.tiktok_handle,tiktok_url:p.tiktok_url,wallet_address:p.wallet_address,created_at:p.created_at});
-async function body(req){const text=await req.text();if(text.length>12000000)bad('Request too large',413);try{const x=JSON.parse(text);if(!x||Array.isArray(x)||typeof x!=='object')bad('Expected JSON object');return x}catch(e){if(e.status)throw e;bad('Invalid JSON')}}
+async function body(req){const text=await req.text();if(text.length>32000000)bad('Request too large',413);try{const x=JSON.parse(text);if(!x||Array.isArray(x)||typeof x!=='object')bad('Expected JSON object');return x}catch(e){if(e.status)throw e;bad('Invalid JSON')}}
 function originGuard(req,url){if(!['POST','PUT','PATCH','DELETE'].includes(req.method))return;const origin=req.headers.get('origin');const host=req.headers.get('x-forwarded-host')||req.headers.get('host')||url.host; if(origin){let u;try{u=new URL(origin)}catch{bad('Invalid origin',403)}if(u.host!==host||!(u.protocol==='https:'||(u.protocol==='http:'&&/^(localhost|127\.0\.0\.1)(:\d+)?$/.test(host))))bad('Cross-origin request rejected',403)}else if(req.headers.get('cookie'))bad('Origin required',403)}
+async function storeDataUrl(data,env,fetchImpl,kind){const m=/^data:([^;]+);base64,([A-Za-z0-9+/=]+)$/.exec(String(data||''));if(!m)throw new ProviderError(`Invalid ${kind} upload`,400);const bytes=Buffer.from(m[2],'base64');const max=kind==='video'?20*1024*1024:8*1024*1024;if(bytes.length>max)throw new ProviderError(`${kind} is too large`,413);const ext=m[1].split('/')[1].replace('jpeg','jpg');const path=`${kind}/${crypto.randomUUID()}.${ext}`;const url=`${env.SUPABASE_URL}/storage/v1/object/trader-media/${path}`;const r=await fetchImpl(url,{method:'POST',headers:{Authorization:`Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,apikey:env.SUPABASE_SERVICE_ROLE_KEY,'Content-Type':m[1],'x-upsert':'false'},body:bytes,signal:AbortSignal.timeout(30000)});if(!r.ok)throw new ProviderError(`${kind} upload failed`,502);return `${env.SUPABASE_URL}/storage/v1/object/public/trader-media/${path}`}
 export function createHandler({env=process.env,db=new Store(env),fetchImpl=fetch}={}){
  return async req=>{
  try{
@@ -161,7 +162,7 @@ export function createHandler({env=process.env,db=new Store(env),fetchImpl=fetch
   if(path==='/api/generations'&&method==='POST'){
    // Do not reserve, debit, or fabricate a job if the API cannot be called.
    if(!providerConfigured(env))return json({error:'Higgsfield API not configured; generation unavailable'},503);
-   const input=validateGeneration(await body(req));
+   const raw=await body(req); if(raw.video_data||raw.image_data){raw.video_url=await storeDataUrl(raw.video_data,env,fetchImpl,'video');raw.image_urls=[await storeDataUrl(raw.image_data,env,fetchImpl,'image')];delete raw.video_data;delete raw.image_data} const input=validateGeneration(raw);
    if(!user.wallet_address)bad('Link a wallet first',403);
    const holding=await tokenHoldings(user.wallet_address,env.SOLANA_RPC_URL,fetchImpl);
    if(creditsFor(holding.rawAmount,holding.decimals)<=Number(user.credits_spent))bad('Insufficient verified token credits',409);
