@@ -1,6 +1,17 @@
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { extname, join } from 'node:path';
-const root = process.cwd(); const port = Number(process.env.PORT || 4173);
-const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json'};
-http.createServer(async (req,res)=>{let p=new URL(req.url,'http://localhost').pathname; if(p==='/'||!extname(p))p='/index.html'; try{const body=await readFile(join(root,p));res.writeHead(200,{'content-type':types[extname(p)]||'application/octet-stream'});res.end(body)}catch{res.writeHead(404);res.end('Not found')}}).listen(port,()=>console.log(`Trader preview: http://localhost:${port}`));
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import api from '../api/index.mjs';
+const root=resolve(fileURLToPath(new URL('..',import.meta.url)));
+const assets={'/':'index.html','/index.html':'index.html','/app.js':'app.js','/styles.css':'styles.css','/public/trader-mark.png':'public/trader-mark.png'};
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png'};
+const port=Number(process.env.PORT||4173);
+http.createServer(async(req,res)=>{
+ const path=new URL(req.url,'http://localhost').pathname;
+ if(path.startsWith('/api/'))return api(req,res);
+ if(!['GET','HEAD'].includes(req.method)||!Object.hasOwn(assets,path)){res.writeHead(404);res.end('Not found');return}
+ const name=assets[path];
+ try{const file=await readFile(resolve(root,name));res.writeHead(200,{'Content-Type':types[name.slice(name.lastIndexOf('.'))],'X-Content-Type-Options':'nosniff'});res.end(req.method==='HEAD'?undefined:file)}
+ catch{res.writeHead(404);res.end('Not found')}
+}).listen(port,()=>console.log(`Trader server listening on ${port}`));

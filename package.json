@@ -3,5 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "scripts": {"dev":"node scripts/server.mjs","preview":"node scripts/server.mjs","build":"node scripts/build.mjs"}
+  "scripts": {
+    "dev": "node scripts/server.mjs",
+    "preview": "node scripts/server.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.mjs"
+  },
+  "dependencies": {
+    "@triton-one/yellowstone-grpc": "^4.0.2",
+    "bs58": "^6.0.0",
+    "tweetnacl": "^1.0.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }
