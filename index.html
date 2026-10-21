@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#090909" />
+  <title>Genjutsu - Higgsfield style video workspace</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="wordmark" href="#"><span class="mark">H</span><span>Higgsfield</span></a>
+      <nav class="primary-nav">
+        <a>Explore</a><a>Image</a><a class="active">Video</a><a>Audio</a><a>MCP</a><a>API</a>
+        <span class="divider"></span><a class="selected">Genjutsu <b>top</b></a><a>Katana <i>New</i></a><a>AI Influencer <i>New</i></a><a>Academy</a>
+      </nav>
+      <div class="top-actions"><a class="help">?</a><button class="icon-btn">⌘</button><button class="login">Log in</button><button class="signup">Sign up</button></div>
+      <button class="mobile-menu">☰</button>
+    </header>
+
+    <main class="workspace">
+      <aside class="rail">
+        <button class="rail-btn active" title="Video">▣</button><button class="rail-btn" title="Projects">◫</button><button class="rail-btn" title="Assets">▧</button><span class="rail-spacer"></span><button class="rail-btn">⚙</button>
+      </aside>
+      <section class="content">
+        <div class="page-heading"><div><div class="eyebrow">VIDEO / MOTION</div><h1>Genjutsu</h1><p>Transform characters and performances with precise motion control.</p></div><button class="credit-pill">✦ 120 credits</button></div>
+        <div class="model-strip"><button class="model-card chosen"><span class="model-thumb pink">✺</span><span><strong>Genjutsu</strong><small>Character motion</small></span><span class="check">✓</span></button><button class="model-card"><span class="model-thumb orange">◒</span><span><strong>Veo 3</strong><small>Text to video</small></span></button><button class="model-card"><span class="model-thumb blue">◌</span><span><strong>Kling</strong><small>Image to video</small></span></button><button class="model-card"><span class="model-thumb violet">✦</span><span><strong>More models</strong><small>Explore library</small></span></button></div>
+        <div class="studio-grid">
+          <section class="editor-card">
+            <div class="card-head"><div><h2>Character swap</h2><span class="muted">Keep the motion. Change the character.</span></div><button class="more">•••</button></div>
+            <div class="media-row"><label class="upload-tile"><input id="sourceInput" type="file" accept="image/*,video/*" /><span class="upload-icon">↑</span><strong id="sourceLabel">Upload source</strong><small>Video or image</small></label><div class="arrow">→</div><label class="upload-tile accent"><input id="sheetInput" type="file" accept="image/*" /><span class="upload-icon">✧</span><strong id="sheetLabel">Character sheet</strong><small>Identity reference</small></label></div>
+            <div class="preview"><div class="preview-bg"><span class="silhouette">◉</span><span class="preview-note">Preview appears here</span></div><div class="preview-badge">GENJUTSU</div></div>
+            <div class="prompt-label"><span>Prompt</span><span class="counter" id="counter">0 / 1000</span></div><textarea id="prompt" placeholder="Describe the transformation and what to preserve..."></textarea>
+            <div class="quick-row"><button data-prompt="Replace the subject with the character from the reference sheet. Preserve the original motion, pose, camera and lighting.">Character swap</button><button data-prompt="Keep the original performance and timing exactly, with a consistent face and hairstyle in every frame.">Preserve motion</button><button data-prompt="Clean plate: remove all text, subtitles, watermarks and logos from the final video.">Clean overlays</button></div>
+            <div class="advanced"><button id="advancedToggle">Advanced settings <span>⌄</span></button><div id="advancedPanel" class="advanced-panel"><label>Motion fidelity <input type="range" min="0" max="100" value="85" /></label><label>Identity strength <input type="range" min="0" max="100" value="90" /></label><label class="toggle-line">Remove text and subtitles <input type="checkbox" checked /></label></div></div>
+            <button class="generate" id="generate">Generate video <span>→</span></button><div class="status" id="status"></div>
+          </section>
+          <aside class="side-panel"><div class="side-card"><div class="side-title"><span>Generation settings</span><button>↗</button></div><div class="setting"><span>Aspect ratio</span><strong>9:16⌄</strong></div><div class="setting"><span>Duration</span><strong>5 sec⌄</strong></div><div class="setting"><span>Quality</span><strong>720p⌄</strong></div><div class="setting"><span>Seed</span><strong>Auto⌄</strong></div></div><div class="tip-card"><span class="tip-icon">✦</span><h3>Make a clean character swap</h3><p>Upload a clear source clip and a character sheet. Genjutsu follows the original movement while maintaining identity across frames.</p><a>Read the guide →</a></div><div class="history"><div class="side-title"><span>Recent generations</span><a>View all</a></div><div class="empty-history"><span>◌</span><p>Your creations will appear here</p></div></div></aside>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

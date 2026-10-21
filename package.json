@@ -1,0 +1,7 @@
+{
+  "name": "trader",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {"dev":"node scripts/server.mjs","preview":"node scripts/server.mjs","build":"node scripts/build.mjs"}
+}
