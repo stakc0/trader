@@ -1,6 +1,6 @@
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
-export const MINT='EVmUGx253WuDaa7JpRjJex68PzmuF1igax1ac6Mpump';
+export const MINT='Dncww7WdSGoKDKBZFxz8wcNJxi3dfM6RKmfMUkcHpump';
 export const TOKEN='TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 export const TOKEN_2022='TokenzQdBNbLqP5VEhdkAS6EPFNY4hqXfG6DFaQPN';
 export function validAddress(value){try{return typeof value==='string'&&bs58.decode(value).length===32}catch{return false}}
