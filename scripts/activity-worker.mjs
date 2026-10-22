@@ -19,7 +19,7 @@ while(!stopping){
   const request={accounts:{},slots:{},transactions:{mint:{vote:false,failed:false,accountInclude:[MINT],accountExclude:[],accountRequired:[]}},transactionsStatus:{},blocks:{},blocksMeta:{},entry:{},accountsDataSlice:[],commitment:CommitmentLevel.CONFIRMED};
   stream.write(request);
   backoff=1000;
-  console.log('Confirmed Yellowstone stream subscribed for exact TRADER mint');
+  console.log('Confirmed Yellowstone stream subscribed for exact TRENCHER mint');
   await new Promise((resolve,reject)=>{
    let serial=Promise.resolve();
    stream.on('data',update=>{serial=serial.then(async()=>{

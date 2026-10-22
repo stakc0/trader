@@ -1,10 +1,10 @@
 import nacl from 'tweetnacl';
 import bs58 from 'bs58';
-export const MINT='a5qFdexdutcopfoKbvYLrRDc2c8BDyLfh9GdhDWtrde';
+export const MINT='EVmUGx253WuDaa7JpRjJex68PzmuF1igax1ac6Mpump';
 export const TOKEN='TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 export const TOKEN_2022='TokenzQdBNbLqP5VEhdkAS6EPFNY4hqXfG6DFaQPN';
 export function validAddress(value){try{return typeof value==='string'&&bs58.decode(value).length===32}catch{return false}}
-export const challengeMessage=(userId,address,nonce)=>`Trader wallet ownership verification\nUser: ${userId}\nWallet: ${address}\nNonce: ${nonce}\nOnly sign this message if you requested to link this wallet.`;
+export const challengeMessage=(userId,address,nonce)=>`Trencher wallet ownership verification\nUser: ${userId}\nWallet: ${address}\nNonce: ${nonce}\nOnly sign this message if you requested to link this wallet.`;
 export function verifyWalletSignature(address,message,signature){
   try {const key=bs58.decode(address);let sig;
     try{sig=bs58.decode(signature)}catch{sig=null}

@@ -14,4 +14,4 @@ http.createServer(async(req,res)=>{
  const name=assets[path];
  try{const file=await readFile(resolve(root,name));res.writeHead(200,{'Content-Type':types[name.slice(name.lastIndexOf('.'))],'X-Content-Type-Options':'nosniff'});res.end(req.method==='HEAD'?undefined:file)}
  catch{res.writeHead(404);res.end('Not found')}
-}).listen(port,()=>console.log(`Trader server listening on ${port}`));
+}).listen(port,()=>console.log(`Trencher server listening on ${port}`));
